@@ -1,20 +1,51 @@
-var f = 0.1;
-var add = 3;
-var sw = 3;
+// Copyright (c) 2019 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
 
-function setup(){
-  createCanvas(400,400);
+/* ===
+ml5 Example
+UNET example using p5.js
+=== */
+
+let video;
+let uNet;
+let segmentationImage;
+
+// load uNet model
+function preload() {
+  uNet = ml5.uNet('face');
 }
 
-function draw(){
-  background(0);
-  for(let i = 0; i < width; i+=add){
-    for(let j = 0; j < height; j+=add){
-      let noiseVal = noise(i*f, j*f);
-      let colorf = lerpColor(color(252, 240, 3), color(0), noiseVal);
-      stroke(colorf);
-      strokeWeight(sw);
-      point(i,j);
-    }
+function setup() {
+  createCanvas(640, 480);
+
+  // load up your video
+  video = createCapture(VIDEO);
+  video.size(width, height);
+  video.hide(); // Hide the video element, and just show the canvas
+
+  // Start with a blank image
+  segmentationImage = createImage(width, height);
+
+  // initial segmentation
+  uNet.segment(video, gotResult);
+}
+
+function gotResult(error, result) {
+  // if there's an error return it
+  if (error) {
+    console.error(error);
+    return;
   }
+  // set the result to the global segmentation variable
+  segmentationImage = result.backgroundMask;
+
+  // Continue asking for a segmentation image
+  uNet.segment(video, gotResult);
+}
+
+function draw() {
+  background(0,255,0);
+  image(segmentationImage, 0, 0, width, height);
 }
