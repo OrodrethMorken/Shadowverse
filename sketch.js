@@ -12,8 +12,11 @@ let video;
 let uNet;
 let segmentationImage;
 
+let img;
+
 // load uNet model
 function preload() {
+  img = loadImage('background.jpg');
   uNet = ml5.uNet('face');
 }
 
@@ -46,6 +49,7 @@ function gotResult(error, result) {
 }
 
 function draw() {
-  background(0,255,0);
+  // background(0);
+  image(img,0,0,width,height);
   image(segmentationImage, 0, 0, width, height);
 }
