@@ -25,7 +25,7 @@ function setup() {
 
   // load up your video
   video = createCapture(VIDEO);
-  video.size(width, height);
+  video.size(width/2, height/2);
   video.hide(); // Hide the video element, and just show the canvas
 
   // Start with a blank image
